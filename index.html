@@ -3,498 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Window Pricing Calculator</title>
+    <title>Window Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
             color: #333;
-            text-align: center;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .floor {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-            font-size: 0.9em;
+            margin: 15px 0;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 6px;
+            padding: 10px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
         }
         th {
             background-color: #f2f2f2;
-            position: sticky;
-            top: 0;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr.subtotal-row {
-            background-color: #e6f7ff;
-            font-weight: bold;
-        }
-        tr.grandtotal-row {
-            background-color: #d4edda;
-            font-weight: bold;
-            font-size: 1.1em;
+        tr:hover {
+            background-color: #f5f5f5;
         }
         input {
-            width: 70px;
-            padding: 4px;
+            padding: 5px;
+            width: 80px;
             border: 1px solid #ddd;
             border-radius: 3px;
         }
-        input:focus {
-            outline: none;
-            border-color: #66afe9;
-            box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
-        }
-        .editable {
-            background-color: #fffde7;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 0.9em;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        button.export-btn {
-            background-color: #2196F3;
-        }
-        button.export-btn:hover {
-            background-color: #0b7dda;
-        }
-        button.reset-btn {
-            background-color: #f44336;
-        }
-        button.reset-btn:hover {
-            background-color: #da190b;
-        }
-        .floor-section {
-            margin-bottom: 30px;
-            border: 1px solid #eee;
-            padding: 10px;
-            border-radius: 5px;
-            page-break-inside: avoid;
-        }
-        .floor-title {
-            font-size: 1.2em;
+        .subtotal, .grandtotal {
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #2c3e50;
+            background-color: #e8f4f8;
         }
-        .button-container {
+        .grandtotal {
+            font-size: 1.2em;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .loading {
             text-align: center;
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+            padding: 20px;
         }
-        @media print {
-            button {
-                display: none;
-            }
-            .floor-section {
-                border: none;
-                padding: 0;
-            }
+        .error {
+            color: #e74c3c;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-radius: 5px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <h1>Window Pricing Calculator</h1>
-    
-    <div class="button-container">
-        <button id="update-all">Update All Totals</button>
-        <button id="reset-rates" class="reset-btn">Reset Rates to Default</button>
-        <button id="export-pdf" class="export-btn">Export as PDF</button>
+    <h1>Window Calculator</h1>
+    <div id="app">
+        <div class="loading">Loading data...</div>
     </div>
-    
-    <div id="data-container">
-        <!-- Data will be inserted here by JavaScript -->
-    </div>
-
-    <!-- Include jsPDF library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <script>
-        // Initialize jsPDF
-        const { jsPDF } = window.jspdf;
-        
-        // CSV data converted to JSON
-        const data = [
-            {Floor: "Ground", "S.No": "1", Code: "G F-S", Description: "Fixed Window", "Width (mm)": "895", "Height (mm)": "1207", "Area (Sq. Ft)": "11.63", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "3953.51", "Glass Type": "Clear Glass (5mm)"},
-            {Floor: "Ground", "S.No": "2", Code: "SW", Description: "Sliding Window", "Width (mm)": "906", "Height (mm)": "910", "Area (Sq. Ft)": "8.87", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "3017.33", "Glass Type": "SS Mesh (2.5 Track)"},
-            {Floor: "Ground", "S.No": "3", Code: "V", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "999.66", "Glass Type": "Pinhead Louvers (4\")"},
-            {Floor: "Ground", "S.No": "", Code: "", Description: "Subtotal (Ground)", "Width (mm)": "", "Height (mm)": "", "Area (Sq. Ft)": "23.44", "Rate (₹/Sq. Ft)": "", Units: "", "Total Value (₹)": "7970.50", "Glass Type": ""},
-            
-            {Floor: "First", "S.No": "1", Code: "SW", Description: "Sliding Window", "Width (mm)": "913", "Height (mm)": "970", "Area (Sq. Ft)": "9.53", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "3241.12", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "First", "S.No": "2", Code: "SD", Description: "Sliding Door", "Width (mm)": "1809", "Height (mm)": "2237", "Area (Sq. Ft)": "43.56", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "14810.07", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "First", "S.No": "3", Code: "SW", Description: "Sliding Window", "Width (mm)": "1218", "Height (mm)": "1219", "Area (Sq. Ft)": "15.98", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "5433.80", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "First", "S.No": "4", Code: "V", Description: "Ventilator", "Width (mm)": "609", "Height (mm)": "448", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "998.50", "Glass Type": "Pinhead Louvers"},
-            {Floor: "First", "S.No": "5", Code: "V", Description: "Ventilator", "Width (mm)": "609", "Height (mm)": "448", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "998.50", "Glass Type": "Pinhead Louvers"},
-            {Floor: "First", "S.No": "6", Code: "SW", Description: "Sliding Window", "Width (mm)": "1189", "Height (mm)": "1203", "Area (Sq. Ft)": "15.40", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "5234.80", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "First", "S.No": "7", Code: "V", Description: "Ventilator", "Width (mm)": "609", "Height (mm)": "448", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "998.50", "Glass Type": "Pinhead Louvers"},
-            {Floor: "First", "S.No": "8", Code: "SW", Description: "Sliding Window", "Width (mm)": "890", "Height (mm)": "1192", "Area (Sq. Ft)": "11.42", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "3882.57", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "First", "S.No": "9", Code: "SW", Description: "Sliding Window", "Width (mm)": "1195", "Height (mm)": "1207", "Area (Sq. Ft)": "15.53", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "5278.71", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "First", "S.No": "", Code: "", Description: "Subtotal (First)", "Width (mm)": "", "Height (mm)": "", "Area (Sq. Ft)": "120.28", "Rate (₹/Sq. Ft)": "", Units: "", "Total Value (₹)": "40475.57", "Glass Type": ""},
-            
-            {Floor: "Second", "S.No": "1", Code: "SW", Description: "Sliding Window", "Width (mm)": "905", "Height (mm)": "908", "Area (Sq. Ft)": "8.85", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "3007.37", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Second", "S.No": "2", Code: "SD", Description: "Sliding Door", "Width (mm)": "1816", "Height (mm)": "2200", "Area (Sq. Ft)": "43.00", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "14621.47", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Second", "S.No": "3", Code: "SW", Description: "Sliding Window", "Width (mm)": "1208", "Height (mm)": "1215", "Area (Sq. Ft)": "15.80", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "5371.50", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Second", "S.No": "4", Code: "V", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "999.66", "Glass Type": "Pinhead Louvers"},
-            {Floor: "Second", "S.No": "5", Code: "V", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "999.66", "Glass Type": "Pinhead Louvers"},
-            {Floor: "Second", "S.No": "6", Code: "SW", Description: "Sliding Window", "Width (mm)": "1201", "Height (mm)": "1218", "Area (Sq. Ft)": "15.75", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "5353.56", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Second", "S.No": "7", Code: "V", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "999.66", "Glass Type": "Pinhead Louvers"},
-            {Floor: "Second", "S.No": "8", Code: "SW", Description: "Sliding Window", "Width (mm)": "921", "Height (mm)": "1203", "Area (Sq. Ft)": "11.93", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "4054.88", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Second", "S.No": "9", Code: "SW", Description: "Sliding Window", "Width (mm)": "1199", "Height (mm)": "1207", "Area (Sq. Ft)": "15.58", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "5296.38", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Second", "S.No": "", Code: "", Description: "Subtotal (Second)", "Width (mm)": "", "Height (mm)": "", "Area (Sq. Ft)": "119.83", "Rate (₹/Sq. Ft)": "", Units: "", "Total Value (₹)": "40703.14", "Glass Type": ""},
-            
-            {Floor: "Third", "S.No": "1", Code: "FX(90)", Description: "Fixed Window", "Width (mm)": "1670", "Height (mm)": "560", "Area (Sq. Ft)": "10.07", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "3825.27", "Glass Type": "Clear Fixed"},
-            {Floor: "Third", "S.No": "2", Code: "SW(90)", Description: "Sliding Window", "Width (mm)": "1213", "Height (mm)": "1073", "Area (Sq. Ft)": "14.01", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "5323.75", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Third", "S.No": "3", Code: "SD(90)", Description: "Sliding Door", "Width (mm)": "1828", "Height (mm)": "2193", "Area (Sq. Ft)": "43.15", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "16397.29", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Third", "S.No": "4", Code: "SW(90)", Description: "Sliding Window", "Width (mm)": "1206", "Height (mm)": "1687", "Area (Sq. Ft)": "21.90", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "8321.85", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Third", "S.No": "5", Code: "CW(90)", Description: "Casement Window", "Width (mm)": "610", "Height (mm)": "1710", "Area (Sq. Ft)": "11.23", "Rate (₹/Sq. Ft)": "420", Units: "1", "Total Value (₹)": "4715.73", "Glass Type": "Clear Casement Window"},
-            {Floor: "Third", "S.No": "6", Code: "V(90)", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "1117.27", "Glass Type": "Pinhead Louvers"},
-            {Floor: "Third", "S.No": "7", Code: "V(90)", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "1117.27", "Glass Type": "Pinhead Louvers"},
-            {Floor: "Third", "S.No": "8", Code: "CW(90)", Description: "Casement Window", "Width (mm)": "601", "Height (mm)": "1531", "Area (Sq. Ft)": "9.90", "Rate (₹/Sq. Ft)": "420", Units: "1", "Total Value (₹)": "4159.80", "Glass Type": "Clear Casement Window"},
-            {Floor: "Third", "S.No": "9", Code: "SW(90)", Description: "Sliding Window", "Width (mm)": "1212", "Height (mm)": "1215", "Area (Sq. Ft)": "15.85", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "6023.32", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Third", "S.No": "10", Code: "V(90)", Description: "Ventilator", "Width (mm)": "607", "Height (mm)": "450", "Area (Sq. Ft)": "2.94", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "1117.27", "Glass Type": "Pinhead Louvers"},
-            {Floor: "Third", "S.No": "11", Code: "SW(90)", Description: "Sliding Window", "Width (mm)": "921", "Height (mm)": "1223", "Area (Sq. Ft)": "12.12", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "4607.27", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Third", "S.No": "12", Code: "SW(90)", Description: "Sliding Window", "Width (mm)": "1486", "Height (mm)": "1669", "Area (Sq. Ft)": "26.70", "Rate (₹/Sq. Ft)": "380", Units: "1", "Total Value (₹)": "10144.54", "Glass Type": "Clear 2.5 Track SS Mesh"},
-            {Floor: "Third", "S.No": "", Code: "", Description: "Subtotal (Third)", "Width (mm)": "", "Height (mm)": "", "Area (Sq. Ft)": "173.75", "Rate (₹/Sq. Ft)": "", Units: "", "Total Value (₹)": "66870.67", "Glass Type": ""},
-            
-            {Floor: "Elevation", "S.No": "1", Code: "FX", Description: "Fixed Window", "Width (mm)": "1825", "Height (mm)": "602", "Area (Sq. Ft)": "11.83", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "4020.80", "Glass Type": "Clear Fixed"},
-            {Floor: "Elevation", "S.No": "2", Code: "FX", Description: "Fixed Window", "Width (mm)": "1060", "Height (mm)": "1943", "Area (Sq. Ft)": "22.17", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "7537.57", "Glass Type": "Clear Fixed"},
-            {Floor: "Elevation", "S.No": "3", Code: "FX", Description: "Fixed Window", "Width (mm)": "1057", "Height (mm)": "2029", "Area (Sq. Ft)": "23.09", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "7848.92", "Glass Type": "Clear Fixed"},
-            {Floor: "Elevation", "S.No": "4", Code: "FX", Description: "Fixed Window", "Width (mm)": "1514", "Height (mm)": "2087", "Area (Sq. Ft)": "34.01", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "11563.81", "Glass Type": "Clear Fixed"},
-            {Floor: "Elevation", "S.No": "5", Code: "FX", Description: "Fixed Window", "Width (mm)": "1511", "Height (mm)": "2061", "Area (Sq. Ft)": "33.52", "Rate (₹/Sq. Ft)": "340", Units: "1", "Total Value (₹)": "11397.12", "Glass Type": "Clear Fixed"},
-            {Floor: "Elevation", "S.No": "", Code: "", Description: "Subtotal (Elevation)", "Width (mm)": "", "Height (mm)": "", "Area (Sq. Ft)": "124.62", "Rate (₹/Sq. Ft)": "", Units: "", "Total Value (₹)": "42368.22", "Glass Type": ""},
-            
-            {Floor: "", "S.No": "", Code: "", Description: "Grand Total", "Width (mm)": "", "Height (mm)": "", "Area (Sq. Ft)": "561.92", "Rate (₹/Sq. Ft)": "", Units: "", "Total Value (₹)": "198388.10", "Glass Type": ""}
-        ];
-
-        // Group data by floor
-        const groupedData = {};
-        data.forEach(row => {
-            if (!groupedData[row.Floor]) {
-                groupedData[row.Floor] = [];
-            }
-            groupedData[row.Floor].push(row);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the JSON data
+            fetch('input.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    renderApp(data);
+                })
+                .catch(error => {
+                    document.getElementById('app').innerHTML = `
+                        <div class="error">
+                            Failed to load data: ${error.message}<br>
+                            Make sure input.json exists in the same directory.
+                        </div>
+                    `;
+                    console.error('Error loading JSON:', error);
+                });
         });
 
-        // Function to calculate total value
-        function calculateTotal(area, rate, units) {
-            return (parseFloat(area) * parseFloat(rate) * parseInt(units)).toFixed(2);
-        }
+        function renderApp(data) {
+            const app = document.getElementById('app');
+            app.innerHTML = ''; // Clear loading message
 
-        // Function to update row total
-        function updateRowTotal(input) {
-            const row = input.closest('tr');
-            const area = row.querySelector('.area').textContent;
-            const rate = input.value;
-            const units = row.querySelector('.units').textContent;
-            const totalCell = row.querySelector('.total-value');
-            
-            if (area && rate && units) {
-                const total = calculateTotal(area, rate, units);
-                totalCell.textContent = total;
-                
-                // Update subtotals and grand total
-                updateAllTotals();
-            }
-        }
-
-        // Function to update all totals
-        function updateAllTotals() {
-            // Update floor subtotals
-            document.querySelectorAll('.floor-section').forEach(section => {
-                const floor = section.dataset.floor;
-                const rows = section.querySelectorAll('tbody tr:not(.subtotal-row):not(.grandtotal-row)');
-                
-                let areaSum = 0;
-                let totalSum = 0;
-                
-                rows.forEach(row => {
-                    const area = parseFloat(row.querySelector('.area').textContent) || 0;
-                    const total = parseFloat(row.querySelector('.total-value').textContent) || 0;
-                    
-                    areaSum += area;
-                    totalSum += total;
-                });
-                
-                // Update subtotal row
-                const subtotalRow = section.querySelector('.subtotal-row');
-                if (subtotalRow) {
-                    subtotalRow.querySelector('.area').textContent = areaSum.toFixed(2);
-                    subtotalRow.querySelector('.total-value').textContent = totalSum.toFixed(2);
-                }
+            // Render each floor
+            data.floors.forEach(floor => {
+                const floorDiv = document.createElement('div');
+                floorDiv.className = 'floor';
+                floorDiv.innerHTML = `
+                    <h2>${floor.floor} Floor</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Dimensions (mm)</th>
+                                <th>Area (Sq. Ft)</th>
+                                <th>Rate (₹/Sq. Ft)</th>
+                                <th>Total Value (₹)</th>
+                                <th>Glass Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${floor.items.map(item => `
+                                <tr>
+                                    <td>${item.sNo}</td>
+                                    <td>${item.code}</td>
+                                    <td>${item.description}</td>
+                                    <td>${item.width_mm} × ${item.height_mm}</td>
+                                    <td>${item.area_sq_ft.toFixed(2)}</td>
+                                    <td><input type="number" value="${item.rate}" 
+                                           data-floor="${floor.floor}" 
+                                           data-sno="${item.sNo}" 
+                                           class="rate-input"></td>
+                                    <td class="item-total">${item.total_value.toFixed(2)}</td>
+                                    <td>${item.glass_type}</td>
+                                </tr>
+                            `).join('')}
+                            <tr class="subtotal">
+                                <td colspan="4">Subtotal (${floor.floor})</td>
+                                <td>${floor.subtotal.area_sq_ft.toFixed(2)}</td>
+                                <td></td>
+                                <td class="floor-total">${floor.subtotal.total_value.toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+                app.appendChild(floorDiv);
             });
-            
-            // Update grand total
-            const grandArea = Array.from(document.querySelectorAll('.subtotal-row .area')).reduce((sum, cell) => sum + parseFloat(cell.textContent || 0), 0);
-            const grandTotal = Array.from(document.querySelectorAll('.subtotal-row .total-value')).reduce((sum, cell) => sum + parseFloat(cell.textContent || 0), 0);
-            
-            const grandTotalRow = document.querySelector('.grandtotal-row');
-            if (grandTotalRow) {
-                grandTotalRow.querySelector('.area').textContent = grandArea.toFixed(2);
-                grandTotalRow.querySelector('.total-value').textContent = grandTotal.toFixed(2);
-            }
-        }
 
-        // Function to reset all rates to default
-        function resetRatesToDefault() {
+            // Render grand total
+            const grandTotalDiv = document.createElement('div');
+            grandTotalDiv.className = 'grandtotal';
+            grandTotalDiv.innerHTML = `
+                <h3>Grand Total</h3>
+                <p>Total Area: ${data.grand_total.area_sq_ft.toFixed(2)} Sq. Ft</p>
+                <p>Total Value: ₹<span id="grand-total-value">${data.grand_total.total_value.toFixed(2)}</span></p>
+            `;
+            app.appendChild(grandTotalDiv);
+
+            // Add event listeners for rate changes
             document.querySelectorAll('.rate-input').forEach(input => {
-                const row = input.closest('tr');
-                const description = row.querySelector('td:nth-child(4)').textContent;
-                
-                // Determine default rate based on description
-                let defaultRate = '340'; // Default rate
-                
-                if (description.includes('Fixed Window')) {
-                    defaultRate = row.closest('.floor-section').dataset.floor === 'Third' ? '380' : '340';
-                } else if (description.includes('Casement Window')) {
-                    defaultRate = '420';
-                } else if (description.includes('Sliding') && row.closest('.floor-section').dataset.floor === 'Third') {
-                    defaultRate = '380';
-                }
-                
-                input.value = defaultRate;
-                updateRowTotal(input);
+                input.addEventListener('change', function() {
+                    updateTotals(this);
+                });
+                input.addEventListener('keyup', function() {
+                    updateTotals(this);
+                });
             });
         }
 
-        // Function to export as PDF
-        function exportToPDF() {
-            const doc = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm'
-            });
-            
-            // Add title
-            doc.setFontSize(16);
-            doc.text('Window Pricing Calculator', 140, 10, { align: 'center' });
-            
-            // Get current date
-            const now = new Date();
-            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-            doc.setFontSize(10);
-            doc.text(`Generated on: ${dateStr}`, 140, 16, { align: 'center' });
-            
-            let yPosition = 25;
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 10;
-            const tableWidth = pageWidth - 2 * margin;
-            
-            // Process each floor section
-            document.querySelectorAll('.floor-section').forEach(section => {
-                const floorTitle = section.querySelector('.floor-title').textContent;
-                const table = section.querySelector('table');
-                
-                // Add floor title
-                doc.setFontSize(12);
-                doc.setTextColor(0, 0, 0);
-                doc.text(floorTitle, margin, yPosition);
-                yPosition += 8;
-                
-                // Prepare table data
-                const headers = [];
-                const rows = [];
-                
-                // Get headers
-                table.querySelectorAll('thead th').forEach(th => {
-                    headers.push(th.textContent);
-                });
-                
-                // Get rows data
-                table.querySelectorAll('tbody tr').forEach(tr => {
-                    const row = [];
-                    tr.querySelectorAll('td').forEach((td, index) => {
-                        // For rate cells, get the input value if it's editable
-                        if (index === 7 && td.querySelector('input')) {
-                            row.push(td.querySelector('input').value);
-                        } else {
-                            row.push(td.textContent);
-                        }
-                    });
-                    rows.push(row);
-                });
-                
-                // Add table to PDF
-                doc.autoTable({
-                    head: [headers],
-                    body: rows,
-                    startY: yPosition,
-                    margin: { left: margin, right: margin },
-                    styles: {
-                        fontSize: 8,
-                        cellPadding: 2,
-                        overflow: 'linebreak'
-                    },
-                    columnStyles: {
-                        0: { cellWidth: 15 },
-                        1: { cellWidth: 10 },
-                        2: { cellWidth: 15 },
-                        3: { cellWidth: 30 },
-                        4: { cellWidth: 15 },
-                        5: { cellWidth: 15 },
-                        6: { cellWidth: 15 },
-                        7: { cellWidth: 15 },
-                        8: { cellWidth: 10 },
-                        9: { cellWidth: 20 },
-                        10: { cellWidth: 30 }
-                    },
-                    didDrawPage: function(data) {
-                        // Footer
-                        doc.setFontSize(8);
-                        doc.setTextColor(150);
-                        doc.text(`Page ${doc.internal.getNumberOfPages()}`, data.settings.margin.left, doc.internal.pageSize.getHeight() - 5);
-                    }
-                });
-                
-                // Update yPosition for next section
-                yPosition = doc.lastAutoTable.finalY + 10;
-                
-                // Add new page if we're getting close to the bottom
-                if (yPosition > 180) {
-                    doc.addPage();
-                    yPosition = 20;
-                }
-            });
-            
-            // Save the PDF
-            doc.save('Window_Pricing_Calculator_' + new Date().toISOString().slice(0, 10) + '.pdf');
-        }
+        function updateTotals(inputElement) {
+            const floor = inputElement.dataset.floor;
+            const sno = inputElement.dataset.sno;
+            const newRate = parseFloat(inputElement.value) || 0;
 
-        // Generate HTML for the data
-        function generateHTML() {
-            const container = document.getElementById('data-container');
-            container.innerHTML = '';
-            
-            // Create sections for each floor
-            for (const floor in groupedData) {
-                if (floor === "") continue; // Skip empty floor (grand total)
-                
-                const floorSection = document.createElement('div');
-                floorSection.className = 'floor-section';
-                floorSection.dataset.floor = floor;
-                
-                const floorTitle = document.createElement('div');
-                floorTitle.className = 'floor-title';
-                floorTitle.textContent = `${floor} Floor`;
-                floorSection.appendChild(floorTitle);
-                
-                const table = document.createElement('table');
-                const thead = document.createElement('thead');
-                const tbody = document.createElement('tbody');
-                
-                // Create table header
-                const headerRow = document.createElement('tr');
-                headerRow.innerHTML = `
-                    <th>Floor</th>
-                    <th>S.No</th>
-                    <th>Code</th>
-                    <th>Description</th>
-                    <th>Width (mm)</th>
-                    <th>Height (mm)</th>
-                    <th>Area (Sq. Ft)</th>
-                    <th>Rate (₹/Sq. Ft)</th>
-                    <th>Units</th>
-                    <th>Total Value (₹)</th>
-                    <th>Glass Type</th>
-                `;
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-                
-                // Create table rows
-                groupedData[floor].forEach(row => {
-                    const tr = document.createElement('tr');
-                    
-                    // Add special class for subtotal rows
-                    if (row.Description.includes('Subtotal')) {
-                        tr.className = 'subtotal-row';
-                    }
-                    
-                    // Check if rate should be editable
-                    const isEditable = row["S.No"] && row["S.No"] !== "";
-                    
-                    tr.innerHTML = `
-                        <td>${row.Floor}</td>
-                        <td>${row["S.No"]}</td>
-                        <td>${row.Code}</td>
-                        <td>${row.Description}</td>
-                        <td>${row["Width (mm)"]}</td>
-                        <td>${row["Height (mm)"]}</td>
-                        <td class="area">${row["Area (Sq. Ft)"]}</td>
-                        <td>
-                            ${isEditable ? 
-                                `<input type="number" class="rate-input editable" value="${row["Rate (₹/Sq. Ft)"]}" 
-                                 onchange="updateRowTotal(this)">` : 
-                                row["Rate (₹/Sq. Ft)"]}
-                        </td>
-                        <td class="units">${row.Units}</td>
-                        <td class="total-value">${row["Total Value (₹)"]}</td>
-                        <td>${row["Glass Type"]}</td>
-                    `;
-                    
-                    tbody.appendChild(tr);
-                });
-                
-                table.appendChild(tbody);
-                floorSection.appendChild(table);
-                container.appendChild(floorSection);
-            }
-            
-            // Add grand total row
-            const grandTotalRow = data.find(row => row.Description === "Grand Total");
-            if (grandTotalRow) {
-                const grandTotalSection = document.createElement('div');
-                grandTotalSection.className = 'floor-section';
-                
-                const table = document.createElement('table');
-                const tbody = document.createElement('tbody');
-                
-                const tr = document.createElement('tr');
-                tr.className = 'grandtotal-row';
-                tr.innerHTML = `
-                    <td colspan="6">${grandTotalRow.Description}</td>
-                    <td class="area">${grandTotalRow["Area (Sq. Ft)"]}</td>
-                    <td></td>
-                    <td></td>
-                    <td class="total-value">${grandTotalRow["Total Value (₹)"]}</td>
-                    <td></td>
-                `;
-                
-                tbody.appendChild(tr);
-                table.appendChild(tbody);
-                grandTotalSection.appendChild(table);
-                container.appendChild(grandTotalSection);
-            }
-            
-            // Add event listeners
-            document.getElementById('update-all').addEventListener('click', updateAllTotals);
-            document.getElementById('reset-rates').addEventListener('click', resetRatesToDefault);
-            document.getElementById('export-pdf').addEventListener('click', exportToPDF);
-        }
+            // Find the row and update the item total
+            const row = inputElement.closest('tr');
+            const area = parseFloat(row.querySelector('td:nth-child(5)').textContent);
+            const itemTotal = area * newRate;
+            row.querySelector('.item-total').textContent = itemTotal.toFixed(2);
 
-        // Initialize the page
-        window.onload = function() {
-            generateHTML();
-            
-            // Make functions available globally
-            window.updateRowTotal = updateRowTotal;
-        };
+            // Update floor total
+            const floorTable = inputElement.closest('table');
+            let floorTotal = 0;
+            floorTable.querySelectorAll('.item-total').forEach(totalCell => {
+                floorTotal += parseFloat(totalCell.textContent);
+            });
+            floorTable.querySelector('.floor-total').textContent = floorTotal.toFixed(2);
+
+            // Update grand total
+            let grandTotal = 0;
+            document.querySelectorAll('.floor-total').forEach(floorTotalCell => {
+                grandTotal += parseFloat(floorTotalCell.textContent);
+            });
+            document.getElementById('grand-total-value').textContent = grandTotal.toFixed(2);
+        }
     </script>
 </body>
 </html>
