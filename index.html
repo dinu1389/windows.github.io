@@ -1,236 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Window Calculator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-    h1, h2, h3 {
-      color: #2c3e50;
-    }
-    .floor {
-      background-color: #f9f9f9;
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 0;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    tr:hover {
-      background-color: #f5f5f5;
-    }
-    input {
-      padding: 5px;
-      width: 80px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-    }
-    .subtotal, .grandtotal {
-      font-weight: bold;
-      background-color: #e8f4f8;
-    }
-    .grandtotal {
-      font-size: 1.2em;
-      padding: 15px;
-      margin-top: 20px;
-      border-radius: 5px;
-    }
-    .loading {
-      text-align: center;
-      padding: 20px;
-    }
-    .error {
-      color: #e74c3c;
-      padding: 10px;
-      background-color: #fadbd8;
-      border-radius: 5px;
-      margin: 10px 0;
-    }
-    .export-buttons {
-      margin-bottom: 20px;
-    }
-    .export-buttons button {
-      margin-right: 10px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      background-color: #3498db;
-      color: white;
-      cursor: pointer;
-    }
-    .export-buttons button:hover {
-      background-color: #2980b9;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .floor {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        input {
+            padding: 5px;
+            width: 80px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .subtotal, .grandtotal {
+            font-weight: bold;
+            background-color: #e8f4f8;
+        }
+        .grandtotal {
+            font-size: 1.2em;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .error {
+            color: #e74c3c;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
-  <h1>Window Calculator</h1>
+    <h1>Window Calculator</h1>
+    <div id="app">
+        <div class="loading">Loading data...</div>
+    </div>
 
-  <div class="export-buttons">
-    <button onclick="exportCSV()">Export as CSV</button>
-    <button onclick="exportPDF()">Export as PDF</button>
-  </div>
-
-  <div id="app">
-    <div class="loading">Loading data...</div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch('input.json')
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-          return response.json();
-        })
-        .then(data => renderApp(data))
-        .catch(error => {
-          document.getElementById('app').innerHTML = \`
-            <div class="error">
-              Failed to load data: \${error.message}<br>
-              Make sure input.json exists in the same directory.
-            </div>
-          \`;
-          console.error('Error loading JSON:', error);
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the JSON data
+            fetch('input.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    renderApp(data);
+                })
+                .catch(error => {
+                    document.getElementById('app').innerHTML = `
+                        <div class="error">
+                            Failed to load data: ${error.message}<br>
+                            Make sure input.json exists in the same directory.
+                        </div>
+                    `;
+                    console.error('Error loading JSON:', error);
+                });
         });
-    });
 
-    function renderApp(data) {
-      const app = document.getElementById('app');
-      app.innerHTML = '';
+        function renderApp(data) {
+            const app = document.getElementById('app');
+            app.innerHTML = ''; // Clear loading message
 
-      data.floors.forEach(floor => {
-        const floorDiv = document.createElement('div');
-        floorDiv.className = 'floor';
-        floorDiv.innerHTML = \`
-          <h2>\${floor.floor} Floor</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Code</th>
-                <th>Description</th>
-                <th>Dimensions (mm)</th>
-                <th>Area (Sq. Ft)</th>
-                <th>Rate (₹/Sq. Ft)</th>
-                <th>Total Value (₹)</th>
-                <th>Glass Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              \${floor.items.map(item => \`
-                <tr>
-                  <td>\${item.sNo}</td>
-                  <td>\${item.code}</td>
-                  <td>\${item.description}</td>
-                  <td>\${item.width_mm} × \${item.height_mm}</td>
-                  <td>\${item.area_sq_ft.toFixed(2)}</td>
-                  <td><input type="number" value="\${item.rate}" data-floor="\${floor.floor}" data-sno="\${item.sNo}" class="rate-input"></td>
-                  <td class="item-total">\${item.total_value.toFixed(2)}</td>
-                  <td>\${item.glass_type}</td>
-                </tr>
-              \`).join('')}
-              <tr class="subtotal">
-                <td colspan="4">Subtotal (\${floor.floor})</td>
-                <td>\${floor.subtotal.area_sq_ft.toFixed(2)}</td>
-                <td></td>
-                <td class="floor-total">\${floor.subtotal.total_value.toFixed(2)}</td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        \`;
-        app.appendChild(floorDiv);
-      });
+            // Render each floor
+            data.floors.forEach(floor => {
+                const floorDiv = document.createElement('div');
+                floorDiv.className = 'floor';
+                floorDiv.innerHTML = `
+                    <h2>${floor.floor} Floor</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Dimensions (mm)</th>
+                                <th>Area (Sq. Ft)</th>
+                                <th>Rate (₹/Sq. Ft)</th>
+                                <th>Total Value (₹)</th>
+                                <th>Glass Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${floor.items.map(item => `
+                                <tr>
+                                    <td>${item.sNo}</td>
+                                    <td>${item.code}</td>
+                                    <td>${item.description}</td>
+                                    <td>${item.width_mm} × ${item.height_mm}</td>
+                                    <td>${item.area_sq_ft.toFixed(2)}</td>
+                                    <td><input type="number" value="${item.rate}" 
+                                           data-floor="${floor.floor}" 
+                                           data-sno="${item.sNo}" 
+                                           class="rate-input"></td>
+                                    <td class="item-total">${item.total_value.toFixed(2)}</td>
+                                    <td>${item.glass_type}</td>
+                                </tr>
+                            `).join('')}
+                            <tr class="subtotal">
+                                <td colspan="4">Subtotal (${floor.floor})</td>
+                                <td>${floor.subtotal.area_sq_ft.toFixed(2)}</td>
+                                <td></td>
+                                <td class="floor-total">${floor.subtotal.total_value.toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+                app.appendChild(floorDiv);
+            });
 
-      const grandTotalDiv = document.createElement('div');
-      grandTotalDiv.className = 'grandtotal';
-      grandTotalDiv.innerHTML = \`
-        <h3>Grand Total</h3>
-        <p>Total Area: \${data.grand_total.area_sq_ft.toFixed(2)} Sq. Ft</p>
-        <p>Total Value: ₹<span id="grand-total-value">\${data.grand_total.total_value.toFixed(2)}</span></p>
-      \`;
-      app.appendChild(grandTotalDiv);
+            // Render grand total
+            const grandTotalDiv = document.createElement('div');
+            grandTotalDiv.className = 'grandtotal';
+            grandTotalDiv.innerHTML = `
+                <h3>Grand Total</h3>
+                <p>Total Area: ${data.grand_total.area_sq_ft.toFixed(2)} Sq. Ft</p>
+                <p>Total Value: ₹<span id="grand-total-value">${data.grand_total.total_value.toFixed(2)}</span></p>
+            `;
+            app.appendChild(grandTotalDiv);
 
-      document.querySelectorAll('.rate-input').forEach(input => {
-        input.addEventListener('change', () => updateTotals(input));
-        input.addEventListener('keyup', () => updateTotals(input));
-      });
-    }
+            // Add event listeners for rate changes
+            document.querySelectorAll('.rate-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    updateTotals(this);
+                });
+                input.addEventListener('keyup', function() {
+                    updateTotals(this);
+                });
+            });
+        }
 
-    function updateTotals(inputElement) {
-      const newRate = parseFloat(inputElement.value) || 0;
-      const row = inputElement.closest('tr');
-      const area = parseFloat(row.querySelector('td:nth-child(5)').textContent);
-      const itemTotal = area * newRate;
-      row.querySelector('.item-total').textContent = itemTotal.toFixed(2);
+        function updateTotals(inputElement) {
+            const floor = inputElement.dataset.floor;
+            const sno = inputElement.dataset.sno;
+            const newRate = parseFloat(inputElement.value) || 0;
 
-      const floorTable = inputElement.closest('table');
-      let floorTotal = 0;
-      floorTable.querySelectorAll('.item-total').forEach(cell => {
-        floorTotal += parseFloat(cell.textContent);
-      });
-      floorTable.querySelector('.floor-total').textContent = floorTotal.toFixed(2);
+            // Find the row and update the item total
+            const row = inputElement.closest('tr');
+            const area = parseFloat(row.querySelector('td:nth-child(5)').textContent);
+            const itemTotal = area * newRate;
+            row.querySelector('.item-total').textContent = itemTotal.toFixed(2);
 
-      let grandTotal = 0;
-      document.querySelectorAll('.floor-total').forEach(cell => {
-        grandTotal += parseFloat(cell.textContent);
-      });
-      document.getElementById('grand-total-value').textContent = grandTotal.toFixed(2);
-    }
+            // Update floor total
+            const floorTable = inputElement.closest('table');
+            let floorTotal = 0;
+            floorTable.querySelectorAll('.item-total').forEach(totalCell => {
+                floorTotal += parseFloat(totalCell.textContent);
+            });
+            floorTable.querySelector('.floor-total').textContent = floorTotal.toFixed(2);
 
-    function exportCSV() {
-      let csvContent = "data:text/csv;charset=utf-8,";
-      document.querySelectorAll('.floor').forEach(floorDiv => {
-        const floorName = floorDiv.querySelector('h2').innerText;
-        csvContent += "\\n" + floorName + "\\n";
-
-        const rows = floorDiv.querySelectorAll('table tr');
-        rows.forEach(row => {
-          const cols = Array.from(row.querySelectorAll('th, td')).map(col => col.innerText.replace(/,/g, ''));
-          csvContent += cols.join(',') + "\\n";
-        });
-      });
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "window_calculator.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    function exportPDF() {
-      const element = document.getElementById('app');
-      const opt = {
-        margin: 0.5,
-        filename: 'window_calculator.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
-    }
-  </script>
+            // Update grand total
+            let grandTotal = 0;
+            document.querySelectorAll('.floor-total').forEach(floorTotalCell => {
+                grandTotal += parseFloat(floorTotalCell.textContent);
+            });
+            document.getElementById('grand-total-value').textContent = grandTotal.toFixed(2);
+        }
+    </script>
 </body>
 </html>
