@@ -1,0 +1,509 @@
+{
+  "floors": [
+    {
+      "floor": "Ground",
+      "items": [
+        {
+          "sNo": 1,
+          "code": "G F-S",
+          "description": "Fixed Window",
+          "width_mm": 895,
+          "height_mm": 1207,
+          "area_sq_ft": 11.63,
+          "rate": 340,
+          "units": 1,
+          "total_value": 3953.51,
+          "glass_type": "Clear Glass (5mm)"
+        },
+        {
+          "sNo": 2,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 906,
+          "height_mm": 910,
+          "area_sq_ft": 8.87,
+          "rate": 340,
+          "units": 1,
+          "total_value": 3017.33,
+          "glass_type": "SS Mesh (2.5 Track)"
+        },
+        {
+          "sNo": 3,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 999.66,
+          "glass_type": "Pinhead Louvers (4\")"
+        }
+      ],
+      "subtotal": {
+        "area_sq_ft": 23.44,
+        "total_value": 7970.50
+      }
+    },
+    {
+      "floor": "First",
+      "items": [
+        {
+          "sNo": 1,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 913,
+          "height_mm": 970,
+          "area_sq_ft": 9.53,
+          "rate": 340,
+          "units": 1,
+          "total_value": 3241.12,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 2,
+          "code": "SD",
+          "description": "Sliding Door",
+          "width_mm": 1809,
+          "height_mm": 2237,
+          "area_sq_ft": 43.56,
+          "rate": 340,
+          "units": 1,
+          "total_value": 14810.07,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 3,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 1218,
+          "height_mm": 1219,
+          "area_sq_ft": 15.98,
+          "rate": 340,
+          "units": 1,
+          "total_value": 5433.80,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 4,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 609,
+          "height_mm": 448,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 998.50,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 5,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 609,
+          "height_mm": 448,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 998.50,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 6,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 1189,
+          "height_mm": 1203,
+          "area_sq_ft": 15.40,
+          "rate": 340,
+          "units": 1,
+          "total_value": 5234.80,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 7,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 609,
+          "height_mm": 448,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 998.50,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 8,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 890,
+          "height_mm": 1192,
+          "area_sq_ft": 11.42,
+          "rate": 340,
+          "units": 1,
+          "total_value": 3882.57,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 9,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 1195,
+          "height_mm": 1207,
+          "area_sq_ft": 15.53,
+          "rate": 340,
+          "units": 1,
+          "total_value": 5278.71,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        }
+      ],
+      "subtotal": {
+        "area_sq_ft": 120.28,
+        "total_value": 40475.57
+      }
+    },
+    {
+      "floor": "Second",
+      "items": [
+        {
+          "sNo": 1,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 905,
+          "height_mm": 908,
+          "area_sq_ft": 8.85,
+          "rate": 340,
+          "units": 1,
+          "total_value": 3007.37,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 2,
+          "code": "SD",
+          "description": "Sliding Door",
+          "width_mm": 1816,
+          "height_mm": 2200,
+          "area_sq_ft": 43.00,
+          "rate": 340,
+          "units": 1,
+          "total_value": 14621.47,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 3,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 1208,
+          "height_mm": 1215,
+          "area_sq_ft": 15.80,
+          "rate": 340,
+          "units": 1,
+          "total_value": 5371.50,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 4,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 999.66,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 5,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 999.66,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 6,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 1201,
+          "height_mm": 1218,
+          "area_sq_ft": 15.75,
+          "rate": 340,
+          "units": 1,
+          "total_value": 5353.56,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 7,
+          "code": "V",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 340,
+          "units": 1,
+          "total_value": 999.66,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 8,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 921,
+          "height_mm": 1203,
+          "area_sq_ft": 11.93,
+          "rate": 340,
+          "units": 1,
+          "total_value": 4054.88,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 9,
+          "code": "SW",
+          "description": "Sliding Window",
+          "width_mm": 1199,
+          "height_mm": 1207,
+          "area_sq_ft": 15.58,
+          "rate": 340,
+          "units": 1,
+          "total_value": 5296.38,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        }
+      ],
+      "subtotal": {
+        "area_sq_ft": 119.83,
+        "total_value": 40703.14
+      }
+    },
+    {
+      "floor": "Third",
+      "items": [
+        {
+          "sNo": 1,
+          "code": "FX(90)",
+          "description": "Fixed Window",
+          "width_mm": 1670,
+          "height_mm": 560,
+          "area_sq_ft": 10.07,
+          "rate": 380,
+          "units": 1,
+          "total_value": 3825.27,
+          "glass_type": "Clear Fixed"
+        },
+        {
+          "sNo": 2,
+          "code": "SW(90)",
+          "description": "Sliding Window",
+          "width_mm": 1213,
+          "height_mm": 1073,
+          "area_sq_ft": 14.01,
+          "rate": 380,
+          "units": 1,
+          "total_value": 5323.75,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 3,
+          "code": "SD(90)",
+          "description": "Sliding Door",
+          "width_mm": 1828,
+          "height_mm": 2193,
+          "area_sq_ft": 43.15,
+          "rate": 380,
+          "units": 1,
+          "total_value": 16397.29,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 4,
+          "code": "SW(90)",
+          "description": "Sliding Window",
+          "width_mm": 1206,
+          "height_mm": 1687,
+          "area_sq_ft": 21.90,
+          "rate": 380,
+          "units": 1,
+          "total_value": 8321.85,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 5,
+          "code": "CW(90)",
+          "description": "Casement Window",
+          "width_mm": 610,
+          "height_mm": 1710,
+          "area_sq_ft": 11.23,
+          "rate": 420,
+          "units": 1,
+          "total_value": 4715.73,
+          "glass_type": "Clear Casement Window"
+        },
+        {
+          "sNo": 6,
+          "code": "V(90)",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 380,
+          "units": 1,
+          "total_value": 1117.27,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 7,
+          "code": "V(90)",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 380,
+          "units": 1,
+          "total_value": 1117.27,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 8,
+          "code": "CW(90)",
+          "description": "Casement Window",
+          "width_mm": 601,
+          "height_mm": 1531,
+          "area_sq_ft": 9.90,
+          "rate": 420,
+          "units": 1,
+          "total_value": 4159.80,
+          "glass_type": "Clear Casement Window"
+        },
+        {
+          "sNo": 9,
+          "code": "SW(90)",
+          "description": "Sliding Window",
+          "width_mm": 1212,
+          "height_mm": 1215,
+          "area_sq_ft": 15.85,
+          "rate": 380,
+          "units": 1,
+          "total_value": 6023.32,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 10,
+          "code": "V(90)",
+          "description": "Ventilator",
+          "width_mm": 607,
+          "height_mm": 450,
+          "area_sq_ft": 2.94,
+          "rate": 380,
+          "units": 1,
+          "total_value": 1117.27,
+          "glass_type": "Pinhead Louvers"
+        },
+        {
+          "sNo": 11,
+          "code": "SW(90)",
+          "description": "Sliding Window",
+          "width_mm": 921,
+          "height_mm": 1223,
+          "area_sq_ft": 12.12,
+          "rate": 380,
+          "units": 1,
+          "total_value": 4607.27,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        },
+        {
+          "sNo": 12,
+          "code": "SW(90)",
+          "description": "Sliding Window",
+          "width_mm": 1486,
+          "height_mm": 1669,
+          "area_sq_ft": 26.70,
+          "rate": 380,
+          "units": 1,
+          "total_value": 10144.54,
+          "glass_type": "Clear 2.5 Track SS Mesh"
+        }
+      ],
+      "subtotal": {
+        "area_sq_ft": 173.75,
+        "total_value": 66870.67
+      }
+    },
+    {
+      "floor": "Elevation",
+      "items": [
+        {
+          "sNo": 1,
+          "code": "FX",
+          "description": "Fixed Window",
+          "width_mm": 1825,
+          "height_mm": 602,
+          "area_sq_ft": 11.83,
+          "rate": 340,
+          "units": 1,
+          "total_value": 4020.80,
+          "glass_type": "Clear Fixed"
+        },
+        {
+          "sNo": 2,
+          "code": "FX",
+          "description": "Fixed Window",
+          "width_mm": 1060,
+          "height_mm": 1943,
+          "area_sq_ft": 22.17,
+          "rate": 340,
+          "units": 1,
+          "total_value": 7537.57,
+          "glass_type": "Clear Fixed"
+        },
+        {
+          "sNo": 3,
+          "code": "FX",
+          "description": "Fixed Window",
+          "width_mm": 1057,
+          "height_mm": 2029,
+          "area_sq_ft": 23.09,
+          "rate": 340,
+          "units": 1,
+          "total_value": 7848.92,
+          "glass_type": "Clear Fixed"
+        },
+        {
+          "sNo": 4,
+          "code": "FX",
+          "description": "Fixed Window",
+          "width_mm": 1514,
+          "height_mm": 2087,
+          "area_sq_ft": 34.01,
+          "rate": 340,
+          "units": 1,
+          "total_value": 11563.81,
+          "glass_type": "Clear Fixed"
+        },
+        {
+          "sNo": 5,
+          "code": "FX",
+          "description": "Fixed Window",
+          "width_mm": 1511,
+          "height_mm": 2061,
+          "area_sq_ft": 33.52,
+          "rate": 340,
+          "units": 1,
+          "total_value": 11397.12,
+          "glass_type": "Clear Fixed"
+        }
+      ],
+      "subtotal": {
+        "area_sq_ft": 124.62,
+        "total_value": 42368.22
+      }
+    }
+  ],
+  "grand_total": {
+    "area_sq_ft": 561.92,
+    "total_value": 198388.10
+  }
+}
